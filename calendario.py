@@ -18,11 +18,13 @@ COLOR_SEP_SEMANA = colors.HexColor('#2E8BC0')  # Separador semana
 COLOR_PROFES = {
     "Claudia": colors.HexColor('#F18F01'),   # Naranja
     "Nadia":   colors.HexColor('#6DD47E'),   # Verde
-    "Noelia":  colors.HexColor('#F6416C'),   # Rosa
+    "Noelia":  colors.HexColor('#0074D9'),   # Azul diferente
     "Paula":   colors.HexColor('#845EC2'),   # Violeta
-    "Silvia":  colors.HexColor('#2E8BC0'),   # Azul fuerte
+    "Silvia":  colors.HexColor('#FF007F'),   # Fucsia llamativo
     "3 libre": colors.HexColor('#888888'),   # Gris para libre
 }
+COLOR_PROFES["Cerrado"] = colors.HexColor('#B0B0B0')
+FERIADO_COLOR = colors.HexColor('#FFD700')  # Amarillo para feriado
 
 # Horarios especiales para la semana del 21 al 25 de julio 2025 (de la imagen)
 horarios_especiales = {
@@ -51,6 +53,35 @@ horarios_especiales = {
         ("16 a 20", "Paula"),
         ("20 a 21", "Silvia"),
     ],
+}
+
+# Horarios especiales para la segunda quincena de junio y la última semana de julio (de las imágenes)
+horarios_especiales_junio = {
+    date(2025, 6, 16): [("8 a 12", "Silvia"), ("14 a 15", "Silvia"), ("17 a 21", "Nadia")],
+    date(2025, 6, 17): [("8 a 12", "Noelia"), ("14 a 15", "Silvia"), ("16 a 21", "Silvia")],
+    date(2025, 6, 18): [("8 a 12", "Silvia"), ("14 a 15", "Silvia"), ("16 a 21", "Silvia")],
+    date(2025, 6, 19): [("8 a 12", "Noelia"), ("14 a 15", "Silvia"), ("16 a 21", "Paula")],
+    date(2025, 6, 20): [("8 a 12", "Claudia"), ("16 a 21", "Paula")],
+    date(2025, 6, 23): [("8 a 12", "Silvia"), ("14 a 15", "Silvia"), ("17 a 21", "Nadia")],
+    date(2025, 6, 24): [("8 a 12", "Noelia"), ("14 a 15", "Cerrado"), ("16 a 21", "Claudia")],
+    date(2025, 6, 25): [("8 a 12", "Claudia"), ("14 a 15", "Cerrado"), ("16 a 21", "Nadia")],
+    date(2025, 6, 26): [("8 a 12", "Noelia"), ("14 a 15", "Cerrado"), ("16 a 21", "Paula")],
+    date(2025, 6, 27): [("8 a 12", "Claudia"), ("16 a 21", "Paula")],
+    date(2025, 6, 30): [("8 a 12", "Claudia"), ("14 a 15", "Cerrado"), ("17 a 21", "Nadia")],
+}
+
+horarios_especiales_julio = {
+    date(2025, 7, 7): [("8 a 12", "Claudia"), ("17 a 21", "Nadia")],
+    date(2025, 7, 14): [("8 a 12", "Claudia"), ("17 a 21", "Nadia")],
+    date(2025, 7, 21): [("8 a 12", "Claudia"), ("17 a 21", "Nadia")],
+    date(2025, 7, 22): [("8 a 12", "Noelia"), ("14 a 15", "Silvia"), ("16 a 21", "Silvia")],
+    date(2025, 7, 23): [("8 a 12", "Silvia"), ("14 a 15", "Silvia"), ("16 a 21", "Silvia")],
+    date(2025, 7, 24): [("8 a 12", "Noelia"), ("14 a 15", "Silvia"), ("16 a 21", "Paula")],
+    date(2025, 7, 25): [("8 a 12", "Claudia"), ("16 a 20", "Paula"), ("20 a 21", "Silvia")],
+    date(2025, 7, 28): [("8 a 12", "Silvia"), ("14 a 15", "Silvia"), ("17 a 21", "Nadia")],
+    date(2025, 7, 29): [("8 a 12", "Noelia"), ("14 a 15", "Silvia"), ("16 a 21", "Silvia")],
+    date(2025, 7, 30): [("8 a 12", "Silvia"), ("14 a 15", "Silvia"), ("16 a 21", "Silvia")],
+    date(2025, 7, 31): [("8 a 12", "Claudia"), ("16 a 21", "Paula")],
 }
 
 # --- GENERADOR DE CALENDARIO ---
@@ -92,6 +123,7 @@ def generar_calendario(nombre_pdf, mes, anio, titulo):
         "Jueves":    {"mañana": "Noelia",  "tarde": "Paula"},
         "Viernes":   {"mañana": "Claudia", "tarde": "Paula"},
     }
+    horario_tarde = "16 a 21"
 
     # Encabezado de días con fondo uniforme y marco redondeado
     c.setFillColor(COLOR_HEADER_BG)
@@ -111,6 +143,11 @@ def generar_calendario(nombre_pdf, mes, anio, titulo):
     first_monday = first_day
     while first_monday.weekday() != 0:
         first_monday -= timedelta(days=1)
+    # Si es junio, empezar desde el 16/06
+    if mes == 6:
+        first_monday = date(anio, mes, 16)
+        while first_monday.weekday() != 0:
+            first_monday -= timedelta(days=1)
     # Construir la matriz de semanas
     weeks = []
     week = []
@@ -135,7 +172,10 @@ def generar_calendario(nombre_pdf, mes, anio, titulo):
         for i, fecha in enumerate(week):
             x = margin + i * day_width
             # Fondo de celda menos claro y marco redondeado
-            c.setFillColor(COLOR_CELL_BG)
+            if mes == 6 and (fecha == date(2025, 6, 16) or fecha == date(2025, 6, 20)):
+                c.setFillColor(FERIADO_COLOR)
+            else:
+                c.setFillColor(COLOR_CELL_BG)
             c.roundRect(x, y - cell_height + cell_padding, day_width - 4,
                         cell_height - cell_padding, 12, fill=1, stroke=0)
             # Marco/borde de cada día
@@ -152,8 +192,25 @@ def generar_calendario(nombre_pdf, mes, anio, titulo):
                 c.drawCentredString(
                     center_x, y - 20, f"{fecha.day:02d}/{mes:02d}")
                 # Si es semana especial, usar los horarios de la imagen
-                if mes == 7 and fecha in horarios_especiales:
-                    horarios_dia = horarios_especiales[fecha]
+                if mes == 6 and fecha in horarios_especiales_junio:
+                    horarios_dia = horarios_especiales_junio[fecha]
+                    y_horario = y - 38
+                    for hora, profe in horarios_dia:
+                        c.setFont("Helvetica-Bold", 10)
+                        c.setFillColor(COLOR_HORARIO)
+                        c.drawString(x + 14, y_horario, hora + ":")
+                        if profe:
+                            font_size = 11
+                            while c.stringWidth(profe, "Helvetica-Bold", font_size) > (day_width/2 - 20) and font_size > 7:
+                                font_size -= 1
+                            c.setFont("Helvetica-Bold", font_size)
+                            color = COLOR_PROFES.get(profe, colors.black)
+                            c.setFillColor(color)
+                            c.drawRightString(
+                                x + day_width - 14, y_horario, profe)
+                        y_horario -= 14
+                elif mes == 7 and fecha in horarios_especiales_julio:
+                    horarios_dia = horarios_especiales_julio[fecha]
                     y_horario = y - 38
                     for hora, profe in horarios_dia:
                         c.setFont("Helvetica-Bold", 10)
@@ -185,7 +242,7 @@ def generar_calendario(nombre_pdf, mes, anio, titulo):
                     # Horario tarde a la izquierda, nombre a la derecha
                     c.setFont("Helvetica-Bold", 10)
                     c.setFillColor(COLOR_HORARIO)
-                    c.drawString(x + 14, y - 62, "16 a 20:")
+                    c.drawString(x + 14, y - 62, horario_tarde + ":")
                     profe_tarde = horario[dia_str]["tarde"]
                     font_size_tarde = 11
                     while c.stringWidth(profe_tarde, "Helvetica-Bold", font_size_tarde) > (day_width/2 - 20) and font_size_tarde > 7:
