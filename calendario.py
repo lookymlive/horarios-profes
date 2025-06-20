@@ -87,7 +87,7 @@ horarios_especiales_julio = {
 # --- GENERADOR DE CALENDARIO ---
 
 
-def generar_calendario(nombre_pdf, mes, anio, titulo):
+def generar_calendario_combinado(nombre_pdf):
     c = canvas.Canvas(nombre_pdf, pagesize=A4)
     width, height = A4
     margin = 40
@@ -102,7 +102,8 @@ def generar_calendario(nombre_pdf, mes, anio, titulo):
                 height - margin, 30, fill=0, stroke=1)
     c.setLineWidth(1)
 
-    # Título con fondo y marco redondeado
+    # Título con fondo y marco redondeado (2 renglones)
+    titulo = "Calendario Profes Junio y Julio 2025"
     titulo_y = start_y - 60
     c.setFillColor(COLOR_HEADER_BG)
     c.roundRect(margin, titulo_y, width - 2*margin, 60, 20, fill=1, stroke=0)
@@ -136,43 +137,28 @@ def generar_calendario(nombre_pdf, mes, anio, titulo):
         c.drawCentredString(x + day_width / 2, start_y - 12, dia)
     start_y -= 40
 
-    # Generar la matriz de semanas (lunes a viernes) para el mes
-    first_day = date(anio, mes, 1)
-    last_day = date(anio, mes, monthrange(anio, mes)[1])
-    # Buscar el primer lunes antes o igual al primer día del mes
-    first_monday = first_day
-    while first_monday.weekday() != 0:
-        first_monday -= timedelta(days=1)
-    # Si es junio, empezar desde el 16/06
-    if mes == 6:
-        first_monday = date(anio, mes, 16)
-        while first_monday.weekday() != 0:
-            first_monday -= timedelta(days=1)
-    # Construir la matriz de semanas
-    weeks = []
-    week = []
-    current = first_monday
-    while True:
-        if current >= first_day and current <= last_day and current.weekday() < 5:
-            week.append(current)
-        elif current < first_day and current.weekday() < 5:
-            week.append(None)
-        elif current > last_day and current.weekday() < 5:
-            week.append(None)
-        if len(week) == 5:
-            weeks.append(week)
-            week = []
-        # Condición de corte: si ya pasamos el último viernes del mes
-        if current > last_day and current.weekday() == 4:
-            break
-        current += timedelta(days=1)
+    # Construir la lista de fechas: 23/06 al 30/06 y todo julio (lunes a viernes)
+    fechas = []
+    # Junio: 23 al 30
+    for d in range(23, 31):
+        f = date(2025, 6, d)
+        if f.weekday() < 5:
+            fechas.append(f)
+    # Julio: 1 al 31
+    for d in range(1, 32):
+        f = date(2025, 7, d)
+        if f.weekday() < 5:
+            fechas.append(f)
+    # Agrupar en semanas de 5 días (lunes a viernes)
+    semanas = [fechas[i:i+5] for i in range(0, len(fechas), 5)]
+
     # Dibujar las semanas
-    for row, week in enumerate(weeks):
+    for row, week in enumerate(semanas):
         y = start_y - row * cell_height
         for i, fecha in enumerate(week):
             x = margin + i * day_width
             # Fondo de celda menos claro y marco redondeado
-            if (mes == 6 and (fecha == date(2025, 6, 16) or fecha == date(2025, 6, 20))) or (mes == 7 and fecha == date(2025, 7, 9)):
+            if (fecha == date(2025, 6, 20)) or (fecha == date(2025, 7, 9)):
                 c.setFillColor(FERIADO_COLOR)
             else:
                 c.setFillColor(COLOR_CELL_BG)
@@ -185,85 +171,68 @@ def generar_calendario(nombre_pdf, mes, anio, titulo):
                         cell_height - cell_padding, 12, fill=0, stroke=1)
             c.setLineWidth(1)
             center_x = x + (day_width - 4) / 2
-            if fecha:
-                # Fecha centrada
-                c.setFont("Helvetica-Bold", 13)
-                c.setFillColor(COLOR_FECHA)
-                c.drawCentredString(
-                    center_x, y - 20, f"{fecha.day:02d}/{mes:02d}")
-                # Si es semana especial, usar los horarios de la imagen
-                if mes == 6 and fecha in horarios_especiales_junio:
-                    horarios_dia = horarios_especiales_junio[fecha]
-                    y_horario = y - 38
-                    for hora, profe in horarios_dia:
-                        c.setFont("Helvetica-Bold", 10)
-                        c.setFillColor(COLOR_HORARIO)
-                        c.drawString(x + 14, y_horario, hora + ":")
-                        if profe:
-                            font_size = 11
-                            while c.stringWidth(profe, "Helvetica-Bold", font_size) > (day_width/2 - 20) and font_size > 7:
-                                font_size -= 1
-                            c.setFont("Helvetica-Bold", font_size)
-                            color = COLOR_PROFES.get(profe, colors.black)
-                            c.setFillColor(color)
-                            c.drawRightString(
-                                x + day_width - 14, y_horario, profe)
-                        y_horario -= 14
-                elif mes == 7 and fecha in horarios_especiales_julio:
-                    horarios_dia = horarios_especiales_julio[fecha]
-                    y_horario = y - 38
-                    for hora, profe in horarios_dia:
-                        c.setFont("Helvetica-Bold", 10)
-                        c.setFillColor(COLOR_HORARIO)
-                        c.drawString(x + 14, y_horario, hora + ":")
-                        if profe:
-                            font_size = 11
-                            while c.stringWidth(profe, "Helvetica-Bold", font_size) > (day_width/2 - 20) and font_size > 7:
-                                font_size -= 1
-                            c.setFont("Helvetica-Bold", font_size)
-                            color = COLOR_PROFES.get(profe, colors.black)
-                            c.setFillColor(color)
-                            c.drawRightString(
-                                x + day_width - 14, y_horario, profe)
-                        y_horario -= 14
-                else:
-                    dia_str = weekdays[i]
-                    # Horario mañana a la izquierda, nombre a la derecha
+            # Fecha centrada
+            c.setFont("Helvetica-Bold", 13)
+            c.setFillColor(COLOR_FECHA)
+            c.drawCentredString(
+                center_x, y - 20, f"{fecha.day:02d}/{fecha.month:02d}")
+            # Horarios especiales
+            if fecha in horarios_especiales_junio:
+                horarios_dia = horarios_especiales_junio[fecha]
+                y_horario = y - 38
+                for hora, profe in horarios_dia:
                     c.setFont("Helvetica-Bold", 10)
                     c.setFillColor(COLOR_HORARIO)
-                    c.drawString(x + 14, y - 38, "8 a 12:")
-                    profe_manana = horario[dia_str]["mañana"]
-                    font_size_manana = 11
-                    while c.stringWidth(profe_manana, "Helvetica-Bold", font_size_manana) > (day_width/2 - 20) and font_size_manana > 7:
-                        font_size_manana -= 1
-                    c.setFont("Helvetica-Bold", font_size_manana)
-                    c.setFillColor(COLOR_PROFES[profe_manana])
-                    c.drawRightString(x + day_width - 14, y - 38, profe_manana)
-                    # Horario tarde a la izquierda, nombre a la derecha
+                    c.drawString(x + 14, y_horario, hora + ":")
+                    if profe:
+                        font_size = 11
+                        while c.stringWidth(profe, "Helvetica-Bold", font_size) > (day_width/2 - 20) and font_size > 7:
+                            font_size -= 1
+                        c.setFont("Helvetica-Bold", font_size)
+                        color = COLOR_PROFES.get(profe, colors.black)
+                        c.setFillColor(color)
+                        c.drawRightString(x + day_width - 14, y_horario, profe)
+                    y_horario -= 14
+            elif fecha in horarios_especiales_julio:
+                horarios_dia = horarios_especiales_julio[fecha]
+                y_horario = y - 38
+                for hora, profe in horarios_dia:
                     c.setFont("Helvetica-Bold", 10)
                     c.setFillColor(COLOR_HORARIO)
-                    c.drawString(x + 14, y - 62, horario_tarde + ":")
-                    profe_tarde = horario[dia_str]["tarde"]
-                    font_size_tarde = 11
-                    while c.stringWidth(profe_tarde, "Helvetica-Bold", font_size_tarde) > (day_width/2 - 20) and font_size_tarde > 7:
-                        font_size_tarde -= 1
-                    c.setFont("Helvetica-Bold", font_size_tarde)
-                    c.setFillColor(COLOR_PROFES[profe_tarde])
-                    c.drawRightString(x + day_width - 14, y - 62, profe_tarde)
+                    c.drawString(x + 14, y_horario, hora + ":")
+                    if profe:
+                        font_size = 11
+                        while c.stringWidth(profe, "Helvetica-Bold", font_size) > (day_width/2 - 20) and font_size > 7:
+                            font_size -= 1
+                        c.setFont("Helvetica-Bold", font_size)
+                        color = COLOR_PROFES.get(profe, colors.black)
+                        c.setFillColor(color)
+                        c.drawRightString(x + day_width - 14, y_horario, profe)
+                    y_horario -= 14
             else:
-                # Celda vacía
-                pass
-    # Sección de anotaciones si hay espacio
-    anotaciones_y = start_y - len(weeks) * cell_height - 30
-    if anotaciones_y > margin + 100:
-        c.setFont("Helvetica-Bold", 14)
-        c.setFillColor(COLOR_HEADER_BG)
-        c.drawString(margin, anotaciones_y, "Anotaciones:")
-        c.setStrokeColor(COLOR_CELL_BORDER)
-        c.setLineWidth(1)
-        for i in range(7):
-            y_line = anotaciones_y - 18 - i*18
-            c.line(margin, y_line, width - margin, y_line)
+                dia_str = weekdays[i]
+                # Horario mañana a la izquierda, nombre a la derecha
+                c.setFont("Helvetica-Bold", 10)
+                c.setFillColor(COLOR_HORARIO)
+                c.drawString(x + 14, y - 38, "8 a 12:")
+                profe_manana = horario[dia_str]["mañana"]
+                font_size_manana = 11
+                while c.stringWidth(profe_manana, "Helvetica-Bold", font_size_manana) > (day_width/2 - 20) and font_size_manana > 7:
+                    font_size_manana -= 1
+                c.setFont("Helvetica-Bold", font_size_manana)
+                c.setFillColor(COLOR_PROFES[profe_manana])
+                c.drawRightString(x + day_width - 14, y - 38, profe_manana)
+                # Horario tarde a la izquierda, nombre a la derecha
+                c.setFont("Helvetica-Bold", 10)
+                c.setFillColor(COLOR_HORARIO)
+                c.drawString(x + 14, y - 62, horario_tarde + ":")
+                profe_tarde = horario[dia_str]["tarde"]
+                font_size_tarde = 11
+                while c.stringWidth(profe_tarde, "Helvetica-Bold", font_size_tarde) > (day_width/2 - 20) and font_size_tarde > 7:
+                    font_size_tarde -= 1
+                c.setFont("Helvetica-Bold", font_size_tarde)
+                c.setFillColor(COLOR_PROFES[profe_tarde])
+                c.drawRightString(x + day_width - 14, y - 62, profe_tarde)
     c.save()
     print(f"✅ PDF generado: {nombre_pdf}")
     try:
@@ -273,14 +242,6 @@ def generar_calendario(nombre_pdf, mes, anio, titulo):
         print(f"No se pudo abrir el PDF automáticamente: {e}")
 
 
-# Generar calendario de JUNIO y JULIO 2025 correctamente
-generar_calendario(
-    "calendario_pilates_junio_2025_completo.pdf",
-    6, 2025,
-    "Calendario Profes Junio 2025"
-)
-generar_calendario(
-    "calendario_pilates_julio_2025_completo.pdf",
-    7, 2025,
-    "Calendario Profes Julio 2025"
-)
+# Ejecutar solo el calendario combinado
+if __name__ == "__main__":
+    generar_calendario_combinado("calendario_profes_junio_julio_2025.pdf")
