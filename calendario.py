@@ -61,7 +61,7 @@ horarios_especiales_junio = {
     date(2025, 6, 17): [("8 a 12", "Noelia"), ("14 a 15", "Silvia"), ("16 a 21", "Silvia")],
     date(2025, 6, 18): [("8 a 12", "Silvia"), ("14 a 15", "Silvia"), ("16 a 21", "Silvia")],
     date(2025, 6, 19): [("8 a 12", "Noelia"), ("14 a 15", "Silvia"), ("16 a 21", "Paula")],
-    date(2025, 6, 20): [("8 a 12", "Claudia"), ("16 a 21", "Paula")],
+    date(2025, 6, 20): [("8 a 12", "Claudia"), ("16 a 20", "Paula"), ("20 a 21", "Silvia")],
     date(2025, 6, 23): [("8 a 12", "Silvia"), ("14 a 15", "Silvia"), ("17 a 21", "Nadia")],
     date(2025, 6, 24): [("8 a 12", "Noelia"), ("14 a 15", "Cerrado"), ("16 a 21", "Claudia")],
     date(2025, 6, 25): [("8 a 12", "Claudia"), ("14 a 15", "Cerrado"), ("16 a 21", "Nadia")],
@@ -172,7 +172,7 @@ def generar_calendario(nombre_pdf, mes, anio, titulo):
         for i, fecha in enumerate(week):
             x = margin + i * day_width
             # Fondo de celda menos claro y marco redondeado
-            if mes == 6 and (fecha == date(2025, 6, 16) or fecha == date(2025, 6, 20)):
+            if (mes == 6 and (fecha == date(2025, 6, 16) or fecha == date(2025, 6, 20))) or (mes == 7 and fecha == date(2025, 7, 9)):
                 c.setFillColor(FERIADO_COLOR)
             else:
                 c.setFillColor(COLOR_CELL_BG)
@@ -277,10 +277,10 @@ def generar_calendario(nombre_pdf, mes, anio, titulo):
 generar_calendario(
     "calendario_pilates_junio_2025_completo.pdf",
     6, 2025,
-    "Calendario Pilates Junio 2025"
+    "Calendario Profes Junio 2025"
 )
 generar_calendario(
     "calendario_pilates_julio_2025_completo.pdf",
     7, 2025,
-    "Calendario Pilates Julio 2025"
+    "Calendario Profes Julio 2025"
 )
