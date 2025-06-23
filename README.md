@@ -1,56 +1,53 @@
-# Calendario Pilates Julio 2025
+# Calendario Profes Junio y Julio 2025 - SILVIA FERNANDEZ PILATES REFORMER
 
-Este proyecto genera un calendario en PDF para las clases de Pilates del mes de julio de 2025, con los horarios y profesores asignados.
+Este proyecto genera un calendario profesional en PDF para los días del 23 al 30 de junio y todo julio de 2025, con los horarios y profesoras de Pilates Reformer. El PDF resultante es limpio, sin secciones innecesarias, y con una cabecera clara en dos líneas.
+
+## ¿Qué hace el script?
+
+- Genera un único archivo PDF: `calendario_profes_junio_julio_2025.pdf`.
+- Incluye solo los días hábiles (lunes a viernes) del 23/06 al 30/06 y todo julio 2025.
+- Muestra los horarios especiales y estándar para cada día.
+- Elimina cualquier sección de anotaciones o elementos innecesarios.
+- El diseño es profesional, claro y fácil de imprimir.
 
 ## Requisitos
 
-- Python 3.13.3 o superior
-- reportlab
+- Python 3.8 o superior
+- Paquete `reportlab`
 
-## Instalación
+Instala la dependencia ejecutando:
 
-1. Clona este repositorio o descarga los archivos.
-2. Instala la librería necesaria:
+```sh
+pip install reportlab
+```
 
-   ```bash
-   pip install reportlab
-   ```
+## Cómo usar
 
-## Uso
+1. Descarga o clona este repositorio.
+2. Abre una terminal en la carpeta del proyecto.
+3. Ejecuta:
 
-1. Ejecuta el script para generar el PDF:
-
-   ```bash
+   ```sh
    python calendario.py
    ```
 
-2. Se creará el archivo `calendario_pilates_julio_2025_completo.pdf` en la misma carpeta.
-3. Abre el PDF y usa la opción de imprimir desde tu lector de PDF favorito.
+4. El PDF se generará en la misma carpeta y se abrirá automáticamente (si tu sistema lo permite).
 
-## Subir a GitHub
+## Buenas prácticas y recomendaciones (Product Manager)
 
-1. Crea un repositorio en GitHub (por ejemplo: `calendario-pilates-julio-2025`).
-2. Abre una terminal en la carpeta del proyecto y ejecuta:
+- **Automatización**: El script está listo para integrarse en flujos de trabajo automatizados (por ejemplo, tareas programadas o integración con sistemas de reservas).
+- **Escalabilidad**: Si en el futuro necesitas agregar más meses, profesoras o tipos de horarios, la estructura del script permite hacerlo fácilmente añadiendo nuevas reglas o ampliando los diccionarios de horarios.
+- **Mantenibilidad**: El código está limpio, con variables y funciones bien nombradas. Si necesitas modificar los colores, profesoras o cabecera, puedes hacerlo fácilmente en la parte superior del script.
+- **Personalización**: Puedes adaptar el diseño visual (colores, fuentes, cabecera) para alinearlo con la identidad visual de tu estudio.
+- **Control de versiones**: Guarda los PDFs generados con nombres que incluyan la fecha de generación para mantener un historial de calendarios.
 
-   ```bash
-   git init
-   git add .
-   git commit -m "Calendario Pilates Julio 2025"
-   git branch -M main
-   git remote add origin https://github.com/tu-usuario/calendario-pilates-julio-2025.git
-   git push -u origin main
-   ```
+## Sugerencias de mejora futura
 
-   Cambia `tu-usuario` por tu nombre de usuario de GitHub.
-
-## Notas para futuros desarrolladores y UI/UX
-
-- El script principal es `calendario.py`. Puedes modificar los horarios, nombres de profesores o el diseño del PDF editando este archivo.
-- Si necesitas cambiar el mes o el año, ajusta las variables `current = date(2025, 7, 1)` y `end = date(2025, 7, 31)`.
-- Para personalizar la estética (colores, tipografía, logos), edita las secciones donde se usan las funciones de `reportlab`.
-- Si agregas nuevas dependencias, recuerda actualizar esta guía.
-- Si tienes problemas con la importación de librerías, asegúrate de estar usando el mismo intérprete de Python donde instalaste los paquetes.
+- Permitir la generación de calendarios para cualquier rango de fechas mediante argumentos de línea de comandos.
+- Exportar también a otros formatos (por ejemplo, imagen PNG o Excel).
+- Añadir tests automáticos para validar la generación del PDF.
+- Integrar con una interfaz web para que los usuarios puedan descargar el calendario personalizado.
 
 ---
 
-¡Listo! Este README está preparado para que cualquier persona (IA, dev o UI/UX) pueda entender, ejecutar y mantener el proyecto fácilmente.
+¿Tienes sugerencias o necesitas una funcionalidad extra? ¡No dudes en abrir un issue o contactarme!
