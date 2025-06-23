@@ -26,9 +26,9 @@ COLOR_PROFES = {
 
 # Horarios especiales para días concretos de junio y julio
 horarios_especiales_junio = {
-    date(2025, 6, 23): [("8 a 12", "Silvia"), ("14 a 15", "Silvia"), ("17 a 21", "Nadia")],
+    date(2025, 6, 23): [("8 a 12", "Silvia"), ("14 a 15", "Silvia"), ("17 a 21", "Claudia")],
     date(2025, 6, 24): [("8 a 12", "Noelia"), ("14 a 15", "Cerrado"), ("16 a 21", "Claudia")],
-    date(2025, 6, 25): [("8 a 12", "Claudia"), ("14 a 15", "Cerrado"), ("16 a 21", "Nadia")],
+    date(2025, 6, 25): [("8 a 12", "Claudia"), ("14 a 15", "Cerrado"), ("16 a 21", "Claudia")],
     date(2025, 6, 26): [("8 a 12", "Noelia"), ("14 a 15", "Cerrado"), ("16 a 21", "Paula")],
     date(2025, 6, 27): [("8 a 12", "Claudia"), ("16 a 21", "Paula")],
     date(2025, 6, 30): [("8 a 12", "Claudia"), ("14 a 15", "Cerrado"), ("17 a 21", "Nadia")],
