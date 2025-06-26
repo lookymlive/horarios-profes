@@ -29,14 +29,17 @@ horarios_especiales_junio = {
     date(2025, 6, 23): [("8 a 12", "Silvia"), ("14 a 15", "Silvia"), ("17 a 21", "Claudia")],
     date(2025, 6, 24): [("8 a 12", "Noelia"), ("14 a 15", "Cerrado"), ("16 a 21", "Claudia")],
     date(2025, 6, 25): [("8 a 12", "Claudia"), ("14 a 15", "Cerrado"), ("16 a 21", "Claudia")],
-    date(2025, 6, 26): [("8 a 12", "Noelia"), ("14 a 15", "Cerrado"), ("16 a 21", "Paula")],
+    date(2025, 6, 26): [("8 a 12", "Noelia"), ("16 a 17", "Paula"), ("18 a 21", "Paula")],
     date(2025, 6, 27): [("8 a 12", "Claudia"), ("16 a 21", "Paula")],
     date(2025, 6, 30): [("8 a 12", "Claudia"), ("14 a 15", "Cerrado"), ("17 a 21", "Nadia")],
 }
 
 horarios_especiales_julio = {
+    date(2025, 7, 3): [("8 a 12", "Noelia"), ("16 a 17", "Paula"), ("18 a 21", "Paula")],
     date(2025, 7, 7): [("8 a 12", "Claudia"), ("17 a 21", "Nadia")],
+    date(2025, 7, 10): [("8 a 12", "Noelia"), ("16 a 17", "Paula"), ("18 a 21", "Paula")],
     date(2025, 7, 14): [("8 a 12", "Claudia"), ("17 a 21", "Nadia")],
+    date(2025, 7, 17): [("8 a 12", "Noelia"), ("16 a 17", "Paula"), ("18 a 21", "Paula")],
     date(2025, 7, 21): [("8 a 12", "Claudia"), ("17 a 21", "Nadia")],
     date(2025, 7, 22): [("8 a 12", "Noelia"), ("14 a 15", "Silvia"), ("16 a 21", "Silvia")],
     date(2025, 7, 23): [("8 a 12", "Silvia"), ("14 a 15", "Silvia"), ("16 a 21", "Silvia")],
@@ -45,7 +48,7 @@ horarios_especiales_julio = {
     date(2025, 7, 28): [("8 a 12", "Silvia"), ("14 a 15", "Silvia"), ("17 a 21", "Nadia")],
     date(2025, 7, 29): [("8 a 12", "Noelia"), ("14 a 15", "Silvia"), ("16 a 21", "Silvia")],
     date(2025, 7, 30): [("8 a 12", "Silvia"), ("14 a 15", "Silvia"), ("16 a 21", "Silvia")],
-    date(2025, 7, 31): [("8 a 12", "Claudia"), ("16 a 21", "Paula")],
+    date(2025, 7, 31): [("8 a 12", "Noelia"), ("16 a 21", "Paula")],
 }
 
 # Horario estándar por día de la semana
